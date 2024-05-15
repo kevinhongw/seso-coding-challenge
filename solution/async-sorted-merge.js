@@ -13,7 +13,7 @@ module.exports = async (logSources, printer, maxHeapSize = DEFAULT_MAX_HEAP_SIZE
   const logSourceUnusedLogCount = [...Array(logSources.length)].map(() => 0);
 
   // Maintain set of undrained log sources. This will increase performance. 
-  const undrainedLogSourceSet = new Set([...Array(logSources.length)].map((_, index) => index));
+  const undrainedLogSourceSet = new Set(logSources.map((_, index) => index));
 
   async function enqueueLogEntryBySourceIndex(logSourceIndex) {
     const logEntry = await logSources[logSourceIndex].popAsync();
@@ -49,7 +49,7 @@ module.exports = async (logSources, printer, maxHeapSize = DEFAULT_MAX_HEAP_SIZE
 
     printer.print(logEntry);
 
-    // Enforce there's at least one entry fetched from each source
+    // Make sure there's at least one entry fetched from the source.
     // So we dont need to worry about print speed > fetch speed (especially when heap size is small)
     while (!logSources[logSourceIndex].drained && logSourceUnusedLogCount[logSourceIndex] <= 0) {
       await enqueueLogEntryBySourceIndex(logSourceIndex);
