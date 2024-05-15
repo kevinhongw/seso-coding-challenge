@@ -33,10 +33,7 @@ module.exports = async (logSources, printer, maxHeapSize = DEFAULT_MAX_HEAP_SIZE
     }
 
     const promises = [];
-
-    const undrainedSourcesIndexes = undrainedLogSourceSet.values();
-
-    for (const index of undrainedSourcesIndexes) {
+    for (const index of undrainedLogSourceSet.values()) {
       promises.push(enqueueLogEntryBySourceIndex(index))
     }
     
